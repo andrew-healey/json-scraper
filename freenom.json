@@ -1,0 +1,31 @@
+{
+  "steps": [{
+      "headers": {
+        "uri": "https://my.freenom.com/dologin.php",
+        "method": "POST",
+        "jar": "freenom",
+        "headers": {
+          "content-type": "application/x-www-form-urlencoded",
+          "Referer": "https://my.freenom.com/"
+        },
+        "body": {
+          "username": "${username}",
+          "password": "${password}"
+        },
+        "json": "true",
+        "status-codes":[
+          "302"
+        ]
+      }
+    },
+    {
+      "headers": {
+        "uri": "https://freenom.com/en/index.html",
+        "jar": "freenom"
+      },
+      "frame": {
+        "$hello": "h1"
+      }
+    }
+  ]
+}
