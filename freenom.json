@@ -1,16 +1,27 @@
 {
-  "steps": [{
+  "steps": [
+    {
+      "headers": {
+        "uri": "https://my.freenom.com/clientarea.php",
+        "jar": "freenom"
+      },
+      "frame":{
+        "$token":"input[name=token] @ value"
+      }
+    },
+    {
       "headers": {
         "uri": "https://my.freenom.com/dologin.php",
         "method": "POST",
         "jar": "freenom",
         "headers": {
           "content-type": "application/x-www-form-urlencoded",
-          "Referer": "https://my.freenom.com/"
+          "Referer": "https://my.freenom.com/clientarea.php"
         },
         "body": {
           "username": "${username}",
-          "password": "${password}"
+          "password": "${password}",
+          "token":"${token}"
         },
         "json": "true",
         "status-codes":[
@@ -20,11 +31,14 @@
     },
     {
       "headers": {
-        "uri": "https://freenom.com/en/index.html",
-        "jar": "freenom"
+        "uri": "https://my.freenom.com/clientarea.php",
+        "jar": "freenom",
+        "headers":{
+          "Referer":"https://my.freenom.com/clientarea.php"
+        }
       },
       "frame": {
-        "$hello": "h1"
+        "$hello": "h1.splash"
       }
     }
   ]
