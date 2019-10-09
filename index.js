@@ -74,7 +74,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
     data = { ...data,
       //TODO Make it so that flatObject is part of getVars and it does not collapse arrays
-      ...getVars( //Convert {"$varName":"contentstuff","extraStuff":"unnecessary"} to {}
+      ...getVars( //Convert {"$varName":"contentstuff","extraStuff":"unnecessary"} to {varName:"contentstuff"}
         flatObject(scrapedData) //Flatten scrapedData
       )
     };
@@ -89,7 +89,7 @@ const runEntireScraper=async (json,inputInfo)=>{
   while(!done){
     const ret=await gen.next();
     done=ret.done;
-    value=value||ret.value;
+    value=ret.value||value;
   }
   return value;
 };
