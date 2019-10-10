@@ -13,21 +13,21 @@ const replaceEachString = (root, inputInfo) =>
     [next]: (typeof root[next] === "string") ? getString(root[next], inputInfo) : replaceEachString(root[next],inputInfo),
   }), {});
 
-const getVars = (obj) =>
-  Object.keys(obj).reduce((last, next) => (next.startsWith("$") ? {
-    ...last,
-    [next.slice(1)]: obj[next]
-  } : last), {});
 
-const flatObject = json => Object.keys(json).reduce((last, next) => ({ ...last,
-  ...(typeof json[next] === "object" ? flatObject(json[next]) : {
-    [next]: json[next]
-  })
-}), {});
+//TODO refactor so it's good
+const getVars=(input,prop,root)=>((typeof input) === "object")?
+  (
+    (input=>prop.startsWith("$")?{...root,[prop]:input}:{...root,...input})
+    (Object.keys(input).reduce((last,next)=>getVars(input[next],next,last),{}))//If starts with $: add getVar'd input to root, else add all keys to root, but their values are all getVar'd
+  ):
+  (
+    prop.startsWith("$")?
+    {...root,[prop.slice(1)]:input}:
+    root
+  );
 
 module.exports = {
   getString,
   replaceEachString,
   getVars,
-  flatObject
 };

@@ -72,12 +72,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
     const scrapedData = ($("*").scrape(step.frame || {}));
 
-    data = { ...data,
-      //TODO Make it so that flatObject is part of getVars and it does not collapse arrays
-      ...getVars( //Convert {"$varName":"contentstuff","extraStuff":"unnecessary"} to {varName:"contentstuff"}
-        flatObject(scrapedData) //Flatten scrapedData
-      )
-    };
+    data=getVars(scrapedData,"",data);//See util.js
     yield data; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
   }
 };
