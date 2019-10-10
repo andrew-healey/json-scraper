@@ -17,8 +17,8 @@ const replaceEachString = (root, inputInfo) =>
 //TODO refactor
 const getVars = (input, prop, root) => ((typeof input) === "object") ?
     (
-      (obj => prop.startsWith("$") ? (input instanceof Array?{...root,[prop]:input.reduce((last,elem,i)=>getVars(elem,"$"+i,last),{})}:{ ...root,
-        [prop]: obj
+      (obj => prop.startsWith("$") ? (input instanceof Array?{...root,[prop.slice(1)]:input.map((elem,i)=>getVars(elem,"$"+i,{})[i])}:{ ...root,
+        [prop.slice(1)]: obj
       }) : { ...root,
         ...obj
       })
