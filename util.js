@@ -10,19 +10,24 @@ const getString = (input, inputInfo) => {
 
 const replaceEachString = (root, inputInfo) =>
   Object.keys(root).reduce((last, next) => ({ ...last,
-    [next]: (typeof root[next] === "string") ? getString(root[next], inputInfo) : replaceEachString(root[next],inputInfo),
+    [next]: (typeof root[next] === "string") ? getString(root[next], inputInfo) : replaceEachString(root[next], inputInfo),
   }), {});
 
 
-//TODO refactor so it's good
-const getVars=(input,prop,root)=>((typeof input) === "object")?
+//TODO refactor
+const getVars = (input, prop, root) => ((typeof input) === "object") ?
+    (
+      (obj => prop.startsWith("$") ? (input instanceof Array?{...root,[prop]:input.reduce((last,elem,i)=>getVars(elem,"$"+i,last),{})}:{ ...root,
+        [prop]: obj
+      }) : { ...root,
+        ...obj
+      })
+      (Object.keys(input).reduce((last, next) => getVars(input[next], next, last), {})) //If starts with $: add getVar'd input to root, else add all keys to root, but their values are all getVar'd
+    ) :
   (
-    (input=>prop.startsWith("$")?{...root,[prop]:input}:{...root,...input})
-    (Object.keys(input).reduce((last,next)=>getVars(input[next],next,last),{}))//If starts with $: add getVar'd input to root, else add all keys to root, but their values are all getVar'd
-  ):
-  (
-    prop.startsWith("$")?
-    {...root,[prop.slice(1)]:input}:
+    prop.startsWith("$") ? { ...root,
+      [prop.slice(1)]: input
+    } :
     root
   );
 
