@@ -31,8 +31,21 @@ const getVars = (input, prop, root) => ((typeof input) === "object") ?
     root
   );
 
+const setNames=(json,names)=>
+  Object.keys(json).reduce((last,prop)=>
+    Object.keys(names).includes("$"+prop)?
+    {...last,["$"+prop]:setNames(json[prop],names["$"+prop])}:
+    (
+      Object.keys(names).includes(prop)?
+      {...last,[prop]:setNames(json[prop],names[prop])}:
+      last
+    )
+  ,{})
+;
+
 module.exports = {
   getString,
   replaceEachString,
   getVars,
+  setNames,
 };

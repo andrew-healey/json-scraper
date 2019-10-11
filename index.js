@@ -9,11 +9,11 @@ const {
   getString,
   replaceEachString,
   getVars,
-  flatObject
+  setNames,
 } = require("./util.js");
 
 const bannedProps = [
-"resolveWithFullResponse"//This changes the structure of the response and breaks scraping via jsonframe
+  "resolveWithFullResponse" //This changes the structure of the response and breaks scraping via jsonframe
 ];
 
 /**
@@ -41,6 +41,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
       [next]: headers[next]
     }), {});
 
+    //TODO Add breakOnError property - default (true), false -> continue and not change data
     let res;
     try {
       res = await request(headers);
@@ -64,27 +65,35 @@ const runJson = async function*(scraper, inputInfo = {}) {
     }
 
     //This point is only reached if res is an HTML body of the response and there was no error status code
+    if (step.json) {
+      const json=JSON.parse(res);
+      namedData=setNames(json,step.frame);
+      console.log(namedData
+      data=getVars(namedData,"",data);
+    } else {
+      //$ is part of cheerio and can be used for JQuery-esque selection
+      const $ = cheerio.load(res);
+      //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
+      jsonframe($);
 
-    //$ is part of cheerio and can be used for JQuery-esque selection
-    const $ = cheerio.load(res);
-    //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
-    jsonframe($);
+      const scrapedData = ($("*").scrape(step.frame || {}));
 
-    const scrapedData = ($("*").scrape(step.frame || {}));
+      data = getVars(scrapedData, "", data); //See util.js
+    }
 
-    data=getVars(scrapedData,"",data);//See util.js
+
     yield data; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
   }
 };
 
-const runEntireScraper=async (json,inputInfo)=>{
-  let value,done;
-  const gen=runJson(json,inputInfo);
-  let i=0;
-  while(!done){
-    const ret=await gen.next();
-    done=ret.done;
-    value=ret.value||value;
+const runEntireScraper = async (json, inputInfo) => {
+  let value, done;
+  const gen = runJson(json, inputInfo);
+  let i = 0;
+  while (!done) {
+    const ret = await gen.next();
+    done = ret.done;
+    value = ret.value || value;
   }
   return value;
 };
