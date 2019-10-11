@@ -16,36 +16,45 @@ const replaceEachString = (root, inputInfo) =>
 
 //TODO refactor
 const getVars = (input, prop, root) => ((typeof input) === "object") ?
+  
+    (obj => prop.startsWith("$") ? (input instanceof Array ? { ...root,
+      [prop.slice(1)]: input.map((elem, i) => getVars(elem, "$" + i, {})[i])
+    } : { ...root,
+      [prop.slice(1)]: obj
+    }) : { ...root,
+      ...obj
+    })
+(Object.keys(input).reduce((last, next) => getVars(input[next], next, last), {})): //If starts with $: add getVar'd input to root, else add all keys to root, but their values are all getVar'd) :
     (
-      (obj => prop.startsWith("$") ? (input instanceof Array?{...root,[prop.slice(1)]:input.map((elem,i)=>getVars(elem,"$"+i,{})[i])}:{ ...root,
-        [prop.slice(1)]: obj
-      }) : { ...root,
-        ...obj
-      })
-      (Object.keys(input).reduce((last, next) => getVars(input[next], next, last), {})) //If starts with $: add getVar'd input to root, else add all keys to root, but their values are all getVar'd
-    ) :
-  (
-    prop.startsWith("$") ? { ...root,
-      [prop.slice(1)]: input
-    } :
-    root
-  );
+      prop.startsWith("$") ? { ...root,
+        [prop.slice(1)]: input
+      } :
+      root
+    );
 
-const setNames=(json,names)=>
-  Object.keys(json).reduce((last,prop)=>
-    Object.keys(names).includes("$"+prop)?
-    {...last,["$"+prop]:setNames(json[prop],names["$"+prop])}:
-    (
-      Object.keys(names).includes(prop)?
-      {...last,[prop]:setNames(json[prop],names[prop])}:
-      last
-    )
-  ,{})
-;
+    const setNames = (input, names) =>
+      typeof input === "object" ?
+      (
+        input instanceof Array ?
+        input.map(elem=>setNames(elem,names))
+        :
+        (Object.keys(input).reduce((last, prop) =>
+          Object.keys(names).includes("$" + prop) ? { ...last,
+            ["$" + prop]: setNames(input[prop], names["$" + prop])
+          } :
+          (
+            Object.keys(names).includes(prop) ? { ...last,
+              [prop]: setNames(input[prop], names[prop])
+            } :
+            last
+          ), {}))) :
+      (
+        input
+      );
 
-module.exports = {
-  getString,
-  replaceEachString,
-  getVars,
-  setNames,
-};
+    module.exports = {
+      getString,
+      replaceEachString,
+      getVars,
+      setNames,
+    };
