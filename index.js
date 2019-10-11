@@ -68,7 +68,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
     if (step.json) {
       const json=JSON.parse(res);
       namedData=setNames(json,step.frame);
-      console.log(namedData
+      console.log(namedData)
       data=getVars(namedData,"",data);
     } else {
       //$ is part of cheerio and can be used for JQuery-esque selection
