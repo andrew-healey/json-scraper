@@ -9,3 +9,5 @@ const {runEntireScraper}=require("@sesamestrong/json-scraper");
   console.log(await runEntireScraper(require('./myScraper.json'),{username:"exampleUsername",password:"exPw"});
 })();
 ```
+### Error Reporting
+JSON Scraper adds a ```jsonData``` and a ```stepNumber``` property to any error that it may throw.
