@@ -29,6 +29,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
   }; //data, the state of the scraper between steps, allows for the passing of initial state via inputInfo
   let jars = {};
 
+  let count=0;
   for (let step of steps) {
     const headers = replaceEachString(step.headers, data); //Converts all ${varName} to the varName property of the data variable
 
@@ -61,6 +62,8 @@ const runJson = async function*(scraper, inputInfo = {}) {
       }
 
       //Throw the error if it is not a StatusCodeError with an expected status code
+      err.jsonData=data;
+      err.stepNumber=count;
       throw err;
     }
 
@@ -68,11 +71,10 @@ const runJson = async function*(scraper, inputInfo = {}) {
     if (step.json) {
       const json=JSON.parse(res);
       namedData=setNames(json,step.frame);
-      console.log(namedData)
       data=getVars(namedData,"",data);
     } else {
       //$ is part of cheerio and can be used for JQuery-esque selection
-      const $ = cheerio.load(res);
+      const $ = cheerio.load(res, {xmlMode: false});
       //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
       jsonframe($);
 
@@ -83,6 +85,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
 
     yield data; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
+    count++;
   }
 };
 
