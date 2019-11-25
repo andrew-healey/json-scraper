@@ -1,3 +1,4 @@
+//Requires some stuff set in .env
 require("dotenv").config();
 const {runJson,getGenerator,runEntireScraper}=require("../index.js");
 
@@ -12,4 +13,4 @@ const {runJson,getGenerator,runEntireScraper}=require("../index.js");
 
   //TODO Add in mcpl scraping
   
-})();
+ })().catch(err=>console.log(err.toString(),err.jsonData,err.stepNumber));
