@@ -54,7 +54,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
       //We only allow handling of StatusCodeError
       if (err instanceof StatusCodeError &&
         //If status-codes property exists and it contains the thrown status code
-        headers["status-codes"] && Object.values(headers["status-codes"]).includes(err.statusCode.toString())
+        headers["status-codes"] && Object.values(headers["status-codes"]).map(i=>i.toString()).includes(err.statusCode.toString())
       ) {
         //Do not run the frame to scrape, just return the unchanged data
         yield data;
