@@ -1,7 +1,8 @@
 name: Node.js Package
 
 on:
-  push
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -21,7 +22,8 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: npm publish
+      - run: echo "https://registry.npmjs.org/" >> .npmrc
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
