@@ -4,12 +4,12 @@
       "uri": "https://gocomics.com/${comicName}/${year}/${month}/${day}/"
     },
     "frame": {
-      "$url": "picture.item-comic-image img.lazyload.img-fluid @ src",
+      "%url": "picture.item-comic-image img.lazyload.img-fluid @ src",
       "adjacents": {
         "_s": "nav.gc-calendar-nav",
         "_d": {
           "$previous": ".fa.btn.btn-outline-secondary.btn-circle.fa.fa-caret-left.sm @ href || \\d+/\\d+/\\d+",
-          "$next": ".fa.btn.btn-outline-secondary.btn-circle.fa.fa-caret-right.sm @ href || \\d+/\\d+/\\d+"
+          "%next": ".fa.btn.btn-outline-secondary.btn-circle.fa.fa-caret-right.sm @ href || \\d+/\\d+/\\d+"
         }
       }
     }
