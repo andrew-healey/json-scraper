@@ -107,4 +107,5 @@ module.exports = {
     runJson,
     runEntireScraper,
     replaceEachString,
+    getString,
 };
