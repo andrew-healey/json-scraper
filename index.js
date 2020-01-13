@@ -1,6 +1,6 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
-const jsonframe = require("jsonframe-cheerio");
+const jsonframe = require("@sesamestrong/jsonframe-cheerio");
 const {
     StatusCodeError,
     RequestError
