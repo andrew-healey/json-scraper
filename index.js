@@ -72,7 +72,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
             const json = JSON.parse(res);
             namedData = setNames(json, step.frame);
             data = getVars(namedData, "", data);
-        } else {
+        } else if(step.frame) {
             //$ is part of cheerio and can be used for JQuery-esque selection
             const $ = cheerio.load(res, {
                 xmlMode: false
@@ -83,6 +83,8 @@ const runJson = async function*(scraper, inputInfo = {}) {
             const scrapedData = ($("*").scrape(step.frame || {}));
 
             data = getVars(scrapedData, "", data); //See util.js
+        } else if(step.text) {
+            data=getVars({[step.text]:res},"",data);
         }
 
 
