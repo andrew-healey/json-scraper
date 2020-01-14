@@ -69,8 +69,8 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
         //This point is only reached if res is an HTML body of the response and there was no error status code
         if (step.json) {
-            const json = JSON.parse(res);
-            namedData = setNames(json, step.frame);
+            const json = res instanceof Object? res: !res? {}:JSON.parse(res);
+            namedData = setNames(json, step.json);
             data = getVars(namedData, "", data);
         } else if(step.frame) {
             //$ is part of cheerio and can be used for JQuery-esque selection
