@@ -1,0 +1,13 @@
+{
+    "steps":[{
+        "headers":{
+            "uri":"https://www.smbc-comics.com/comic/archive",
+            "test":{
+                "tast":"${year}"
+            }
+        },
+        "frame":{
+            "%comicId":"option:contains(\"$convert{\"${year}-${month}-${day}\",\"YYYY-MM-DD\",\"MMMM D[, ]YYYY\"}\") @ value || [^/]+$"
+        }
+    }]
+}

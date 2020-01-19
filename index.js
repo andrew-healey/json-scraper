@@ -21,7 +21,7 @@ const bannedProps = [
  * Each call of .next() returns the updated state (data) of the scraper after one more step
  * This allows for modification of state in between calls of .next() because the state is returned by reference
  */
-const runJson = async function*(scraper, inputInfo = {}) {
+const runJson = async function*(scraper, inputInfo = {}, extensions) {
     const {
         steps
     } = scraper;
@@ -31,7 +31,7 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
     let count = 0;
     for (let step of steps) {
-        const headers = replaceEachString(step.headers, data); //Converts all ${varName} to the varName property of the data variable
+        const headers = replaceEachString(step.headers, data, extensions); //Converts all ${varName} to the varName property of the data variable
 
         if (headers.jar) { //Named jars are for auth
             if (!jars[headers.jar]) jars[headers.jar] = request.jar();
@@ -69,10 +69,10 @@ const runJson = async function*(scraper, inputInfo = {}) {
 
         //This point is only reached if res is an HTML body of the response and there was no error status code
         if (step.json) {
-            const json = res instanceof Object? res: !res? {}:JSON.parse(res);
+            const json = res instanceof Object ? res : !res ? {} : JSON.parse(res);
             namedData = setNames(json, step.json);
             data = getVars(namedData, "", data);
-        } else if(step.frame) {
+        } else if (step.frame) {
             //$ is part of cheerio and can be used for JQuery-esque selection
             const $ = cheerio.load(res, {
                 xmlMode: false
@@ -80,11 +80,13 @@ const runJson = async function*(scraper, inputInfo = {}) {
             //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
             jsonframe($);
 
-            const scrapedData = ($("*").scrape(step.frame || {}));
+            const scrapedData = ($("*").scrape(replaceEachString(step.frame || {}, data, extensions)));
 
             data = getVars(scrapedData, "", data); //See util.js
-        } else if(step.text) {
-            data=getVars({[step.text]:res},"",data);
+        } else if (step.text) {
+            data = getVars({
+                [step.text]: res
+            }, "", data);
         }
 
 
@@ -93,9 +95,9 @@ const runJson = async function*(scraper, inputInfo = {}) {
     }
 };
 
-const runEntireScraper = async (json, inputInfo) => {
+const runEntireScraper = async (json, inputInfo, extensions) => {
     let value, done;
-    const gen = runJson(json, inputInfo);
+    const gen = runJson(json, inputInfo, extensions);
     let i = 0;
     while (!done) {
         const ret = await gen.next();

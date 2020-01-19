@@ -1,6 +1,6 @@
 {
   "name": "@sesamestrong/json-scraper",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A tool to allow for quick running of JSON-based scrapers using request-promise and jsonframe-cheerio.",
   "main": "index.js",
   "scripts": {},
@@ -19,5 +19,8 @@
     "dotenv": "^8.1.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
+  },
+  "devDependencies": {
+    "moment": "^2.24.0"
   }
 }
