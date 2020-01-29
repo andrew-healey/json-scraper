@@ -15,9 +15,9 @@ const getString = (input, inputInfo, extensions = [{
 };
 
 const replaceEachString = (root, inputInfo, extensions) =>
-    Object.keys(root).reduce((last, next) => ({ ...last,
+    (root instanceof Array? Object.values: i=>i )(Object.keys(root).reduce((last, next) => ({ ...last,
         [next]: (typeof root[next] === "string") ? getString(root[next], inputInfo, extensions) : replaceEachString(root[next], inputInfo, extensions),
-    }), {});
+    }), {}));
 
 
 //TODO refactor
