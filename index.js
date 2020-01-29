@@ -104,7 +104,7 @@ const runEntireScraper = async (json, inputInfo, extensions) => {
         done = ret.done;
         value = ret.value || value;
     }
-    return value;
+    return value||{};
 };
 
 module.exports = {
