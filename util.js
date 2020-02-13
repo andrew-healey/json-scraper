@@ -57,9 +57,6 @@ const setNames = (input, names) =>
         input
     );
 
-
-    console.log(setNames({name:"hi"},{"$name":'hey'}))
-
 module.exports = {
     getString,
     replaceEachString,
