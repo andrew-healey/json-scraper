@@ -45,7 +45,7 @@ const setNames = (input, names) =>
         input.map(elem => setNames(elem, names)) :
         (Object.keys(input).reduce((last, prop) =>
             Object.keys(names).includes("$" + prop) || Object.keys(names).includes("%" + prop) ? { ...last,
-                ["$" + prop]: setNames(input[prop], names["$" + prop])
+                [typeof (names["$" + prop]||names["%" + prop])=="string"?"$"+names["$" + prop]:("$"+prop)]: setNames(input[prop], names["$" + prop])
             } :
             (
                 Object.keys(names).includes(prop) ? { ...last,
@@ -56,6 +56,9 @@ const setNames = (input, names) =>
     (
         input
     );
+
+
+    console.log(setNames({name:"hi"},{"$name":'hey'}))
 
 module.exports = {
     getString,
