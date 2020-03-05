@@ -45,7 +45,7 @@ const setNames = (input, names) =>
         input.map(elem => setNames(elem, names)) :
         (Object.keys(input).reduce((last, prop) =>
             Object.keys(names).includes("$" + prop) || Object.keys(names).includes("%" + prop) ? { ...last,
-                [typeof (names["$" + prop]||names["%" + prop])=="string"?"$"+(names["$" + prop]||names["%" + prop]):("$"+prop)]: setNames(input[prop], names["$" + prop])
+                [typeof (names["$" + prop]||names["%" + prop])=="string"?"$"+(names["$" + prop]||names["%" + prop]):("$"+prop)]: setNames(input[prop], names["$" + prop]||names["%"+prop])
             } :
             (
                 Object.keys(names).includes(prop) ? { ...last,
