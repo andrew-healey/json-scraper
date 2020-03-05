@@ -93,6 +93,7 @@ const runJson = async function*(scraper, inputInfo = {}, extensions) {
         yield data; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
         count++;
     }
+    return jars
 };
 
 const runEntireScraper = async (json, inputInfo, extensions, returnJar) => {
