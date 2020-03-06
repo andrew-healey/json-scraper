@@ -41,8 +41,8 @@ const getVars = (input, prop, root) => ((typeof input) === "object") ?
 const setNames = (input, names) =>
     typeof input === "object" ?
     (
-        input instanceof Array ?
-        input.map(elem => setNames(elem, names)) :
+        input instanceof Array && names instanceof Array ?
+        input.map(elem => setNames(elem, names[0])) :
         (Object.keys(input).reduce((last, prop) =>
             Object.keys(names).includes("$" + prop) || Object.keys(names).includes("%" + prop) ? { ...last,
                 [typeof (names["$" + prop]||names["%" + prop])=="string"?"$"+(names["$" + prop]||names["%" + prop]):("$"+prop)]: setNames(input[prop], names["$" + prop]||names["%"+prop])

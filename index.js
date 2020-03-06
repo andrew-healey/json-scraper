@@ -21,13 +21,12 @@ const bannedProps = [
  * Each call of .next() returns the updated state (data) of the scraper after one more step
  * This allows for modification of state in between calls of .next() because the state is returned by reference
  */
-const runJson = async function*(scraper, inputInfo = {}, extensions) {
+const runJson = async function*(scraper, inputInfo = {vars:inputInfo,jars={}}, extensions) {
     const {
         steps
     } = scraper;
     let data = { ...inputInfo
     }; //data, the state of the scraper between steps, allows for the passing of initial state via inputInfo
-    let jars = {};
 
     let count = 0;
     for (let step of steps) {
@@ -90,13 +89,13 @@ const runJson = async function*(scraper, inputInfo = {}, extensions) {
         }
 
 
-        yield data; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
+        yield {vars:data,jars}; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
         count++;
     }
     return jars
 };
 
-const runEntireScraper = async (json, inputInfo, extensions, returnJar) => {
+const runEntireScraper = async (json, inputInfo, extensions) => {
     let value, done;
     const gen = runJson(json, inputInfo, extensions);
     let i = 0;
@@ -107,7 +106,7 @@ const runEntireScraper = async (json, inputInfo, extensions, returnJar) => {
         if(done) endCookies=ret.value;
         else value = ret.value || value;
     }
-    return returnJar?{...endCookies,...value}:value||{};
+    return value||{};
 };
 
 module.exports = {
