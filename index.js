@@ -21,7 +21,7 @@ const bannedProps = [
  * Each call of .next() returns the updated state (data) of the scraper after one more step
  * This allows for modification of state in between calls of .next() because the state is returned by reference
  */
-const runJson = async function*(scraper, inputInfo = {vars:inputInfo,jars={}}, extensions) {
+const runJson = async function*(scraper, {vars:inputInfo,jars={}}={}, extensions) {
     const {
         steps
     } = scraper;
