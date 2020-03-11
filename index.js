@@ -79,7 +79,7 @@ const runJson = async function*(scraper, {vars:inputInfo,jars={}}={}, extensions
             //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
             jsonframe($);
 
-            const scrapedData = ($("*").scrape(replaceEachString(step.frame || {}, data, extensions)));
+            const scrapedData = ($("html").scrape(replaceEachString(step.frame || {}, data, extensions)));
 
             data = getVars(scrapedData, "", data); //See util.js
         } else if (step.text) {
