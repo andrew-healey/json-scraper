@@ -30,10 +30,10 @@ const runJson = async function*(scraper, {
     } = scraper;
     let data = { ...inputInfo
     }; //data, the state of the scraper between steps, allows for the passing of initial state via inputInfo
-    if (step.headers) {
 
-        let count = 0;
-        for (let step of steps) {
+    let count = 0;
+    for (let step of steps) {
+        if (step.headers) {
             const headers = replaceEachString(step.headers, data, extensions); //Converts all ${varName} to the varName property of the data variable
 
             if (headers.jar) { //Named jars are for auth
@@ -93,8 +93,8 @@ const runJson = async function*(scraper, {
             }
         }
 
-        if(step.set){
-            data=getVars(replaceEachString(step.set,data,extensions),"",data);
+        if (step.set) {
+            data = getVars(replaceEachString(step.set, data, extensions), "", data);
         }
 
 
@@ -104,7 +104,7 @@ const runJson = async function*(scraper, {
         }; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
         count++;
     }
-    return jars
+    return jars;
 };
 
 const runEntireScraper = async (json, inputInfo, extensions) => {
