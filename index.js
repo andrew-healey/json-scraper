@@ -107,7 +107,7 @@ const runJson = async function*(scraper, {
     return jars;
 };
 
-const runEntireScraper = async (json, inputInfo, extensions) => {
+const runEntireScraper = async (json, inputInfo, extensions, doCookies) => {
     let value, done;
     const gen = runJson(json, inputInfo, extensions);
     let i = 0;
@@ -118,7 +118,10 @@ const runEntireScraper = async (json, inputInfo, extensions) => {
         if (done) endCookies = ret.value;
         else value = ret.value || value;
     }
-    return value || {};
+    return doCookies ? ({
+        vars: value,
+        jars: endCookies
+    }) : (value || {});
 };
 
 module.exports = {
