@@ -1,6 +1,6 @@
 {
   "name": "@sesamestrong/json-scraper",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "A tool to allow for quick running of JSON-based scrapers using request-promise and jsonframe-cheerio.",
   "main": "index.js",
   "scripts": {},

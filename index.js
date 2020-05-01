@@ -79,7 +79,7 @@ const runJson = async function*(scraper, {
             } else if (step.frame) {
                 //$ is part of cheerio and can be used for JQuery-esque selection
                 const $ = cheerio.load(res, {
-                    xmlMode: false
+                    xmlMode: true,
                 });
                 //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
                 jsonframe($);
