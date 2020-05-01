@@ -24,7 +24,7 @@ const bannedProps = [
 const runJson = async function*(scraper, {
     vars: inputInfo,
     jars = {}
-} = {}, extensions) {
+} = {}, extensions,defaultHeaders={}) {
     const {
         steps
     } = scraper;
@@ -67,6 +67,7 @@ const runJson = async function*(scraper, {
                 //Throw the error if it is not a StatusCodeError with an expected status code
                 err.jsonData = data;
                 err.stepNumber = count;
+                err.headers=headers;
                 throw err;
             }
 
@@ -83,7 +84,7 @@ const runJson = async function*(scraper, {
                 //Add JSONFrame capabilities to cheerio (adds $(selector).scrape(json))
                 jsonframe($);
 
-                const scrapedData = ($("html").scrape(replaceEachString(step.frame, data, extensions)));
+                const scrapedData = ($.root().scrape(replaceEachString(step.frame, data, extensions)));
 
                 data = getVars(scrapedData, "", data); //See util.js
             } else if (step.text) {

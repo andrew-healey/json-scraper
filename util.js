@@ -7,17 +7,15 @@ const runExtensions = (str, inputInfo, extensions) =>
  * Given a root (usually a snip), generate a string based on that root and the inputs. The input must be a regex of our format.
  */
 const getString = (input, inputInfo, extensions = [{
-    regex: /\$\{([^{}]+)\}/g,
-    edit: (info,[_, key]) => info[key],
-}]) => {
-    if (typeof input === "string") return runExtensions(input, inputInfo, extensions);
-    throw new TypeError("A string generation value must be a string.");
-};
+        regex: /\$\{([^{}]+)\}/g,
+        edit: (info, [_, key]) => info[key],
+    }]) =>
+    (typeof input === "string") ? runExtensions(input, inputInfo, extensions) : input;
 
 const replaceEachString = (root, inputInfo, extensions) =>
-    (root instanceof Array? Object.values: i=>i )(Object.keys(root).reduce((last, next) => ({ ...last,
-        [next]: (typeof root[next] === "string") ? getString(root[next], inputInfo, extensions) : replaceEachString(root[next], inputInfo, extensions),
-    }), {}));
+    (root instanceof Array ? Object.values : i => i)(typeof root == "object" ? Object.keys(root).reduce((last, next) => ({ ...last,
+        [next]: replaceEachString(root[next], inputInfo, extensions),
+    }), {}) : getString(root, inputInfo, extensions));
 
 
 //TODO refactor
@@ -45,7 +43,7 @@ const setNames = (input, names) =>
         input.map(elem => setNames(elem, names[0])) :
         (Object.keys(input).reduce((last, prop) =>
             Object.keys(names).includes("$" + prop) || Object.keys(names).includes("%" + prop) ? { ...last,
-                [typeof (names["$" + prop]||names["%" + prop])=="string"?"$"+(names["$" + prop]||names["%" + prop]):("$"+prop)]: setNames(input[prop], names["$" + prop]||names["%"+prop])
+                [typeof(names["$" + prop] || names["%" + prop]) == "string" ? "$" + (names["$" + prop] || names["%" + prop]) : ("$" + prop)]: setNames(input[prop], names["$" + prop] || names["%" + prop])
             } :
             (
                 Object.keys(names).includes(prop) ? { ...last,
