@@ -60,7 +60,7 @@ const runJson = async function*(scraper, {
                     headers["status-codes"] && Object.values(headers["status-codes"]).map(i => i.toString()).includes(err.statusCode.toString())
                 ) {
                     //Do not run the frame to scrape, just return the unchanged data
-                    yield data;
+                    yield {vars:data,jars};
                     continue;
                 }
 
@@ -101,14 +101,13 @@ const runJson = async function*(scraper, {
 
         yield {
             vars: data,
-            jars
+            jars,
         }; //Note that this is returning data by reference in order to allow the user to modify it before running the next step
         count++;
     }
-    return jars;
 };
 
-const runEntireScraper = async (json, inputInfo, extensions, doCookies) => {
+const runEntireScraper = async (json, inputInfo, extensions) => {
     let value, done;
     const gen = runJson(json, inputInfo, extensions);
     let i = 0;
@@ -116,13 +115,9 @@ const runEntireScraper = async (json, inputInfo, extensions, doCookies) => {
     while (!done) {
         const ret = await gen.next();
         done = ret.done;
-        if (done) endCookies = ret.value;
-        else value = ret.value || value;
+        value = ret.value || value;
     }
-    return doCookies ? ({
-        vars: value,
-        jars: endCookies
-    }) : (value || {});
+    return (value || inputInfo);
 };
 
 module.exports = {
